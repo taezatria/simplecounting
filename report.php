@@ -57,14 +57,21 @@ $_SESSION['page'] = "report";
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-5">
                     <div class="card">
                         <div class="header">
                             <h4 class="title">Search Date</h4>
                             <p class="category">Choose a date</p>
                         </div>
                         <div class="content">
-                            <input type="date" class="form-control border-input">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <input type="date" class="form-control border-input">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-success btn-fill btn-block">Search</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -126,13 +133,14 @@ $_SESSION['page'] = "report";
 
     <script type="text/javascript">
         $(document).ready(function(){
+            balanceData();
             $("#<?php echo $_SESSION['page'] ?>").addClass("active");
             $("#sect").change(function(){
                 if($("#sect").val() == 1){
-
+                    balanceData();
                 }
                 else if($("#sect").val() == 2){
-                    
+                    incomeData();
                 }
                 else if($("#sect").val() == 3){
                     
@@ -150,10 +158,29 @@ $_SESSION['page'] = "report";
                 success: function(hasil){
                     $("#tbody").html("");
                     $.each(hasil['debit'], function(i,field){
-                        $("#tbody").append('<tr><td></td><td></td><td></td><td></td></tr>')
-                    })
+                        $("#tbody").append('<tr><td>'+field.ref+'</td><td>'+field.name+'</td><td>'+field.total+'</td><td> - </td></tr>');
+                    });
+                    $.each(hasil['credit'], function(i,field){
+                        $("#tbody").append('<tr><td>'+field.ref+'</td><td>'+field.name+'</td><td> - </td><td>'+field.total+'</td></tr>');
+                    });
                 }
-            })
+            });
+        }
+        function balanceData(){
+            $.ajax({
+                url: "reportdata.php",
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    balance: 1
+                },
+                success: function(hasil){
+                    $("#tbody").html("");
+                    $.each(hasil, function(i,field){
+                        $("#tbody").append('<tr><td>'+field.ref+'</td><td>'+field.name+'</td><td>'+field.debit+'</td><td>'+field.credit+'</td></tr>');
+                    });
+                }
+            });
         }
     </script>
 

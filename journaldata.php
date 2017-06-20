@@ -49,10 +49,10 @@
 		$norm = $_POST['norm'];
 		for($i=0 ; $i < sizeof($ref); $i++){
 			if($norm[$i] == 'debit') {
-				mysqli_query($con,"INSERT INTO journal VALUES(null,'$tgl','$ref[$i]','$desc[$i]','$val[$i]',null,null,null,0)");
+				mysqli_query($con,"INSERT INTO journal VALUES(null,'$tgl','$ref[$i]','$desc[$i]','$val[$i]',0,null,null,0)");
 			}
 			else {
-				mysqli_query($con,"INSERT INTO journal VALUES(null,'$tgl','$ref[$i]','$desc[$i]',null,'$val[$i]',null,null,0)");
+				mysqli_query($con,"INSERT INTO journal VALUES(null,'$tgl','$ref[$i]','$desc[$i]',0,'$val[$i]',null,null,0)");
 			}
 		}
 		echo "Berhasil";
