@@ -2,7 +2,7 @@
 	<div class="sidebar-wrapper">
         <div class="logo">
             <a href="http://www.creative-tim.com" class="simple-text">
-                Creative Tim
+                Simple Counting
             </a>
         </div>
 
@@ -50,10 +50,10 @@
                 </a>
             </li>
             
-			<li class="active-pro">
-                <a href="">
-                    <i class="ti-export"></i>
-                    <p></p>
+			<li id="settings" class="active-pro">
+                <a href="setting.php">
+                    <i class="ti-settings"></i>
+                    <p>Settings</p>
                 </a>
             </li>
         </ul>

@@ -39,7 +39,6 @@ $_SESSION['page'] = "report";
     <div class="wrapper">
         <?php include 'header.php'; ?>
 
-
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
@@ -50,11 +49,22 @@ $_SESSION['page'] = "report";
                             <p class="category">Choose One</p>
                         </div>
                         <div class="content">
-                            <select class="form-control border-input">
-                                <option>Balance Sheet</option>
-                                <option>Income Statement</option>
-                                <option>Owner's Equity</option>
+                            <select class="form-control border-input" id="sect">
+                                <option value="1">Balance Sheet</option>
+                                <option value="2">Income Statement</option>
+                                <option value="3">Owner's Equity</option>
                             </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="header">
+                            <h4 class="title">Search Date</h4>
+                            <p class="category">Choose a date</p>
+                        </div>
+                        <div class="content">
+                            <input type="date" class="form-control border-input">
                         </div>
                     </div>
                 </div>
@@ -64,30 +74,20 @@ $_SESSION['page'] = "report";
                     <div class="col-md-12">
                         <div class="card" id="isi">
                             <div class="header">
-                            <h4 class="title">head</h4>
-                                <p class="category">Test</p>
+                            <h4 class="title">Balance Sheet</h4>
+                                <p class="category"></p>
                             </div>
                             <div class="content">
-                                <div class="table-responsive">
+                                <div class="table-responsive" id="isi">
                                     <table class="table table-hover">
                                         <thead>
-                                            <tr>
-                                                <th>id</th>
-                                                <th>Name</th>
-                                                <th>Cek</th>
-                                            </tr>
+                                            <th>Reference</th>
+                                            <th>Name</th>
+                                            <th>Debit</th>
+                                            <th>Credit</th>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Satri</td>
-                                                <td>HAHAHA</td>
-                                            </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Satri</td>
-                                                <td>HAHAHA</td>
-                                            </tr>
+                                        <tbody id="tbody">
+                                            
                                         </tbody>
                                     </table>
                                 </div>
@@ -127,7 +127,34 @@ $_SESSION['page'] = "report";
     <script type="text/javascript">
         $(document).ready(function(){
             $("#<?php echo $_SESSION['page'] ?>").addClass("active");
+            $("#sect").change(function(){
+                if($("#sect").val() == 1){
+
+                }
+                else if($("#sect").val() == 2){
+                    
+                }
+                else if($("#sect").val() == 3){
+                    
+                }
+            });
         });
+        function incomeData(){
+            $.ajax({
+                url: "reportdata.php",
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    income: 1
+                },
+                success: function(hasil){
+                    $("#tbody").html("");
+                    $.each(hasil['debit'], function(i,field){
+                        $("#tbody").append('<tr><td></td><td></td><td></td><td></td></tr>')
+                    })
+                }
+            })
+        }
     </script>
 
     </html>
