@@ -244,7 +244,8 @@ $_SESSION['page'] = "purchases";
                                 <option>pending</option>
                                 <option>approved</option>
                                 <option>on process</option>
-                                <option>done</option>
+                                <option>payment</option>
+                                <option disabled>done</option>
                             </select>
                         </div>
                     </div>
@@ -266,7 +267,8 @@ $_SESSION['page'] = "purchases";
               </div>
               <!-- footernya -->
               <div class="modal-footer">
-                 <button type="button" class="btn btn-success btn-fill" data-dismiss="modal" id="update">Submit</button>
+                <button type="button" class="btn btn-danger btn-fill" id="bayar">Pay Bill</button>
+                <button type="button" class="btn btn-success btn-fill" data-dismiss="modal" id="update">Submit</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               </div>
             </div>
@@ -363,10 +365,9 @@ $_SESSION['page'] = "purchases";
                 $("#stts").val(st);
                 showDetail(id);
                 $("#detailHistory").modal('show');
-
             });
             $("#stts").change(function(){
-                if($(this).val() == 'done'){
+                if($(this).val() == 'payment'){
                     $("#detBody").children("tr").each(function(i){
                         var max = parseInt($(this).children("td:eq(5)").find("input").attr("max"));
                         $(this).children("td:eq(5)").find("input").val(max);
@@ -378,7 +379,23 @@ $_SESSION['page'] = "purchases";
                         $(this).children("td:eq(5)").find("input").removeAttr("disabled");
                     });
                 }
-            })
+            });
+            $("#bayar").click(function(){
+                $.ajax({
+                    url: "podata.php",
+                    type: "POST",
+                    async: "false",
+                    data: {
+                        bayar: 1,
+                        id: $("#idpurc").val()
+                    },
+                    success: function(hasil){
+                        alert(hasil);
+                        $("#detailHistory").modal('hide');
+                        showData();
+                    }
+                });
+            });
         });
         function updateTrans(){
             $.ajax({

@@ -244,7 +244,8 @@ $_SESSION['page'] = "sales";
                                 <option>pending</option>
                                 <option>approved</option>
                                 <option>on process</option>
-                                <option>done</option>
+                                <option>payment</option>
+                                <option disabled>done</option>
                             </select>
                         </div>
                     </div>
@@ -266,7 +267,8 @@ $_SESSION['page'] = "sales";
               </div>
               <!-- footernya -->
               <div class="modal-footer">
-                 <button type="button" class="btn btn-success btn-fill" data-dismiss="modal" id="update">Submit</button>
+                <button type="button" class="btn btn-danger btn-fill" id="bayar">Get Paid</button>
+                <button type="button" class="btn btn-success btn-fill" data-dismiss="modal" id="update">Submit</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               </div>
             </div>
@@ -366,7 +368,7 @@ $_SESSION['page'] = "sales";
 
             });
             $("#stts").change(function(){
-                if($(this).val() == 'done'){
+                if($(this).val() == 'payment'){
                     $("#detBody").children("tr").each(function(i){
                         var max = parseInt($(this).children("td:eq(5)").find("input").attr("max"));
                         $(this).children("td:eq(5)").find("input").val(max);
@@ -378,7 +380,23 @@ $_SESSION['page'] = "sales";
                         $(this).children("td:eq(5)").find("input").removeAttr("disabled");
                     });
                 }
-            })
+            });
+            $("#bayar").click(function(){
+                $.ajax({
+                    url: "sodata.php",
+                    type: "POST",
+                    async: "false",
+                    data: {
+                        bayar: 1,
+                        id: $("#idsale").val()
+                    },
+                    success: function(hasil){
+                        alert(hasil);
+                        $("#detailHistory").modal('hide');
+                        showData();
+                    }
+                });
+            });
         });
         function updateTrans(){
             $.ajax({

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
--- https://www.phpmyadmin.net/
+-- version 4.5.1
+-- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Jun 18, 2017 at 02:50 PM
--- Server version: 10.1.21-MariaDB
--- PHP Version: 7.1.1
+-- Host: 127.0.0.1
+-- Generation Time: Jun 21, 2017 at 07:10 AM
+-- Server version: 10.1.13-MariaDB
+-- PHP Version: 5.6.23
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -40,9 +40,11 @@ CREATE TABLE `coa` (
 INSERT INTO `coa` (`ref`, `name`, `val`, `type`) VALUES
 (101, 'Cash', 'debit', 1),
 (201, 'Inventory', 'debit', 2),
+(202, 'Account Receivable', 'debit', 2),
 (301, 'Account Payable', 'credit', 3),
 (401, 'Sales Revenue', 'credit', 4),
 (501, 'Purchase Expense', 'debit', 5),
+(502, 'COGS', 'debit', 5),
 (601, 'Capital', 'credit', 6);
 
 -- --------------------------------------------------------
@@ -89,7 +91,9 @@ CREATE TABLE `det_purchases` (
 
 INSERT INTO `det_purchases` (`id`, `amount`, `subtotal`, `received`, `id_po`, `id_invent`) VALUES
 (1, 5, 5000, 0, 1, 1),
-(2, 10, 10000, 0, 1, 2);
+(2, 10, 10000, 0, 1, 2),
+(3, 2, 10000, 2, 2, 1),
+(4, 4, 20000, 4, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -105,6 +109,14 @@ CREATE TABLE `det_sales` (
   `id_so` int(11) NOT NULL,
   `id_invent` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `det_sales`
+--
+
+INSERT INTO `det_sales` (`id`, `amount`, `subtotal`, `sent`, `id_so`, `id_invent`) VALUES
+(1, 2, 5000, 2, 1, 1),
+(2, 4, 10000, 4, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -124,8 +136,8 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`id`, `name`, `stock`, `price`) VALUES
-(1, 'Masakok', 5, 2000),
-(2, 'Mericak', 10, 1500);
+(1, 'Masakok', 3, 2000),
+(2, 'Mericak', 6, 1500);
 
 -- --------------------------------------------------------
 
@@ -151,7 +163,34 @@ CREATE TABLE `journal` (
 
 INSERT INTO `journal` (`id`, `tgl`, `ref`, `det`, `debit`, `credit`, `id_so`, `id_po`, `posted`) VALUES
 (2, '2017-06-06 00:00:00', 101, 'mopdal awal', 100000, NULL, NULL, NULL, 1),
-(3, '2017-06-06 00:00:00', 601, 'modal', NULL, 100000, NULL, NULL, 1);
+(3, '2017-06-06 00:00:00', 601, 'modal', NULL, 100000, NULL, NULL, 1),
+(12, '2017-06-21 11:38:19', 301, 'Pembayaran Pembelian', 30000, 0, NULL, 2, 1),
+(13, '2017-06-21 11:38:19', 101, 'Pembayaran Pembelian', 0, 30000, NULL, 2, 1),
+(14, '2017-06-21 11:45:32', 101, 'Pembayaran Pembelian', 15000, 0, NULL, 1, 1),
+(15, '2017-06-21 11:45:32', 202, 'Pembayaran Pembelian', 0, 15000, NULL, 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `parameter`
+--
+
+CREATE TABLE `parameter` (
+  `id` varchar(30) NOT NULL,
+  `ref` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `parameter`
+--
+
+INSERT INTO `parameter` (`id`, `ref`) VALUES
+('1', 401),
+('2', 202),
+('3', 201),
+('4', 502),
+('5', 301),
+('6', 101);
 
 -- --------------------------------------------------------
 
@@ -172,7 +211,8 @@ CREATE TABLE `purchases_order` (
 --
 
 INSERT INTO `purchases_order` (`id`, `tgl`, `id_sup`, `total`, `status`) VALUES
-(1, '2017-05-16 00:00:00', 1, 15000, 'pending');
+(1, '2017-05-16 00:00:00', 1, 15000, 'pending'),
+(2, '2017-06-13 00:00:00', 1, 30000, 'done');
 
 -- --------------------------------------------------------
 
@@ -187,6 +227,13 @@ CREATE TABLE `sales_order` (
   `total` int(11) NOT NULL,
   `status` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `sales_order`
+--
+
+INSERT INTO `sales_order` (`id`, `tgl`, `id_cust`, `total`, `status`) VALUES
+(1, '2017-05-31 00:00:00', 1, 15000, 'done');
 
 -- --------------------------------------------------------
 
@@ -282,6 +329,12 @@ ALTER TABLE `journal`
   ADD KEY `po_id` (`id_po`);
 
 --
+-- Indexes for table `parameter`
+--
+ALTER TABLE `parameter`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `purchases_order`
 --
 ALTER TABLE `purchases_order`
@@ -320,12 +373,12 @@ ALTER TABLE `customer`
 -- AUTO_INCREMENT for table `det_purchases`
 --
 ALTER TABLE `det_purchases`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `det_sales`
 --
 ALTER TABLE `det_sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `inventory`
 --
@@ -335,17 +388,17 @@ ALTER TABLE `inventory`
 -- AUTO_INCREMENT for table `journal`
 --
 ALTER TABLE `journal`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `purchases_order`
 --
 ALTER TABLE `purchases_order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `sales_order`
 --
 ALTER TABLE `sales_order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `supplier`
 --

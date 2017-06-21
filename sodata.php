@@ -69,4 +69,21 @@
 		mysqli_query($con, "UPDATE sales_order SET status='$stat' WHERE id=$idso");
 		echo "Update berhasil";
 	}
+	if(isset($_POST['bayar'])) {
+		$id = $_POST['id'];
+		$hasil = mysqli_query($con, "SELECT status,total FROM sales_order WHERE id=$id");
+		$get = mysqli_fetch_row($hasil);
+		if($get[0] != 'payment') {
+			echo "Must on state payment!";
+			exit;
+		}
+		$hasil = mysqli_query($con, "SELECT ref FROM parameter WHERE id=6");
+		$get1 = mysqli_fetch_row($hasil);
+		$hasil = mysqli_query($con, "SELECT ref FROM parameter WHERE id=2");
+		$get2 = mysqli_fetch_row($hasil);
+		mysqli_query($con, "INSERT INTO journal VALUES(null,now(),$get1[0],'Penjualan Barang',$get[1],0,null,$id,1)");
+		mysqli_query($con, "INSERT INTO journal VALUES(null,now(),$get2[0],'Penjualan Barang',0,$get[1],null,$id,1)");
+		mysqli_query($con, "UPDATE sales_order SET status='done' WHERE id=$id");
+		echo "Berhasil";
+	}
 ?>
