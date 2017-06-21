@@ -143,7 +143,7 @@ $_SESSION['page'] = "report";
                     incomeData();
                 }
                 else if($("#sect").val() == 3){
-                    
+                    ownerData();
                 }
             });
         });
@@ -173,6 +173,22 @@ $_SESSION['page'] = "report";
                 dataType: "JSON",
                 data: {
                     balance: 1
+                },
+                success: function(hasil){
+                    $("#tbody").html("");
+                    $.each(hasil, function(i,field){
+                        $("#tbody").append('<tr><td>'+field.ref+'</td><td>'+field.name+'</td><td>'+field.debit+'</td><td>'+field.credit+'</td></tr>');
+                    });
+                }
+            });
+        }
+        function ownerData(){
+            $.ajax({
+                url: "reportdata.php",
+                type: "POST",
+                dataType: "JSON",
+                data: {
+                    owner: 1
                 },
                 success: function(hasil){
                     $("#tbody").html("");

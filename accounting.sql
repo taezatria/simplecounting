@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.6.5.2
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 21, 2017 at 07:10 AM
--- Server version: 10.1.13-MariaDB
--- PHP Version: 5.6.23
+-- Generation Time: Jun 21, 2017 at 09:14 AM
+-- Server version: 10.1.21-MariaDB
+-- PHP Version: 5.6.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -45,7 +45,8 @@ INSERT INTO `coa` (`ref`, `name`, `val`, `type`) VALUES
 (401, 'Sales Revenue', 'credit', 4),
 (501, 'Purchase Expense', 'debit', 5),
 (502, 'COGS', 'debit', 5),
-(601, 'Capital', 'credit', 6);
+(601, 'Capital', 'credit', 6),
+(602, 'Drawing', 'debit', 6);
 
 -- --------------------------------------------------------
 
