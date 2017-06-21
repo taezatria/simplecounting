@@ -301,6 +301,7 @@ $_SESSION['page'] = "purchases";
         var amount = [];
         var subtotal = [];
         var total = 0;
+        var idbar = [];
         $(document).ready(function(){
             $("#<?php echo $_SESSION['page'] ?>").addClass("active");
             showData();
@@ -308,7 +309,7 @@ $_SESSION['page'] = "purchases";
             showItems();
             $("#additem").click(function(){
                 $("#listBody").append("<tr><td>"+$("#iditem").val()+"</td><td>"+$("#iditem option:selected").html()+"</td><td>"+$("#amount").val()+"</td><td>"+$("#subtotal").val()+"</td><td><button type='button' class='btn btn-danger'><i class='ti-close'></i></button></td></tr>");
-                total += parseInt($("#subtotal").val());
+                total += (parseInt($("#subtotal").val()) * parseInt($("#amount").val()));
                 $("#ttl").val(total);
                 $("#amount").val(0);
                 $("#subtotal").val(0);
@@ -342,9 +343,11 @@ $_SESSION['page'] = "purchases";
             $("#update").click(function(){
                 amount=[];
                 items=[];
+                idbar = [];
                 $("#detBody").children("tr").each(function(i){
                     items.push($(this).children("td:eq(0)").html());
                     amount.push($(this).children("td:eq(5)").find("input").val());
+                    idbar.push($(this).children("td:eq(1)").html());
                 });
                 updateTrans();
             });
@@ -404,6 +407,7 @@ $_SESSION['page'] = "purchases";
                 async: "false",
                 data: {
                     update: 1,
+                    idbar: idbar,
                     iddet: items,
                     amount: amount,
                     idpo: $("#idpurc").val(),

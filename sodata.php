@@ -31,7 +31,7 @@
 		echo json_encode($data);
 	}
 	if(isset($_POST['detail'])) {
-		$id = 1;//$_POST['idso'];
+		$id = $_POST['idso'];
 		$query = "SELECT det_sales.id as id, id_so, id_invent, name, amount, sent, subtotal FROM det_sales JOIN inventory ON id_invent = inventory.id WHERE id_so = $id";
 		$exe = mysqli_query($con, $query);
 		$data = [];
@@ -52,10 +52,28 @@
 		$get = "SELECT MAX(id) FROM sales_order";
 		$getid = mysqli_query($con,$get);
 		$idso = mysqli_fetch_row($getid);
+		$total = 0;
+		$mi = 0;
 		for($i=0; $i < sizeof($iditems); $i++) {
+			$total += ($amount[$i] * $subtotal[$i]);
+			$ex = mysqli_query($con, "SELECT price FROM inventory WHERE id=$iditems[$i]");
+			$hsl = mysqli_fetch_row($ex);
+			$mi += ($amount[$i] * $hsl[0]);
 			mysqli_query($con, "INSERT INTO det_sales VALUES(null,$amount[$i],$subtotal[$i],0,$idso[0],$iditems[$i])");
 			mysqli_query($con, "UPDATE inventory SET stock=stock-$amount[$i] WHERE id=$iditems[$i]");
 		}
+		$hasil = mysqli_query($con, "SELECT ref FROM parameter WHERE id=1");
+		$get1 = mysqli_fetch_row($hasil);
+		$hasil = mysqli_query($con, "SELECT ref FROM parameter WHERE id=2");
+		$get2 = mysqli_fetch_row($hasil);
+		$hasil = mysqli_query($con, "SELECT ref FROM parameter WHERE id=3");
+		$get3 = mysqli_fetch_row($hasil);
+		$hasil = mysqli_query($con, "SELECT ref FROM parameter WHERE id=4");
+		$get4 = mysqli_fetch_row($hasil);
+		mysqli_query($con, "INSERT INTO journal VALUES(null,now(),$get2[0],'Penjualan',$total,0,$idso[0],null,1)");
+		mysqli_query($con, "INSERT INTO journal VALUES(null,now(),$get1[0],'Penjualan',0,$total,$idso[0],null,1)");
+		mysqli_query($con, "INSERT INTO journal VALUES(null,now(),$get4[0],'Pokok Penjualan',$mi,0,$idso[0],null,1)");
+		mysqli_query($con, "INSERT INTO journal VALUES(null,now(),$get3[0],'Pokok Penjualan',0,$mi,$idso[0],null,1)");
 		echo "Berhasil";
 	}
 	if(isset($_POST['update'])) {
@@ -81,8 +99,8 @@
 		$get1 = mysqli_fetch_row($hasil);
 		$hasil = mysqli_query($con, "SELECT ref FROM parameter WHERE id=2");
 		$get2 = mysqli_fetch_row($hasil);
-		mysqli_query($con, "INSERT INTO journal VALUES(null,now(),$get1[0],'Penjualan Barang',$get[1],0,null,$id,1)");
-		mysqli_query($con, "INSERT INTO journal VALUES(null,now(),$get2[0],'Penjualan Barang',0,$get[1],null,$id,1)");
+		mysqli_query($con, "INSERT INTO journal VALUES(null,now(),$get1[0],'Pembayaran Penjualan',$get[1],0,$id,null,1)");
+		mysqli_query($con, "INSERT INTO journal VALUES(null,now(),$get2[0],'Pembayaran Penjualan',0,$get[1],$id,null,1)");
 		mysqli_query($con, "UPDATE sales_order SET status='done' WHERE id=$id");
 		echo "Berhasil";
 	}

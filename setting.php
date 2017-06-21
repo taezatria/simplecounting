@@ -123,7 +123,7 @@ $_SESSION['page'] = "settings";
                 <div class="row">
                     <div class="col-md-2 col-md-offset-10">
                             <div class="content" style="margin-top: 25px;">
-                                <button type="button" class="btn btn-success btn-fill btn-wd">Save</button>
+                                <button type="button" class="btn btn-success btn-fill btn-wd" id="save">Save</button>
                             </div>
                     </div>
                 </div>
@@ -157,7 +157,31 @@ $_SESSION['page'] = "settings";
         $(document).ready(function(){
             $("#<?php echo $_SESSION['page'] ?>").addClass("active");
             setAll();
+            $("#save").click(function(){
+                save();
+            });
         });
+        function save(){
+            var temp = [];
+            temp.push($("#setsales").val());
+            temp.push($("#setaccr").val());
+            temp.push($("#setinventory").val());
+            temp.push($("#setcogs").val());
+            temp.push($("#setaccp").val());
+            temp.push($("#setcash").val());
+            $.ajax({
+                url: "setdata.php",
+                type: "POST",
+                async: "false",
+                data: {
+                    save: 1,
+                    dta: temp
+                },
+                success: function(hasil) {
+                    alert(hasil);
+                }
+            });
+        }
         function setAll() {
             $.ajax({
                 url: "setdata.php",
@@ -167,7 +191,20 @@ $_SESSION['page'] = "settings";
                     setup: 1
                 },
                 success: function(hasil) {
-                    
+                    $.each(hasil[0],function(i,field){
+                        $("#setsales").append('<option value="'+field.ref+'">'+field.name+'</option>');
+                        $("#setaccr").append('<option value="'+field.ref+'">'+field.name+'</option>');
+                        $("#setinventory").append('<option value="'+field.ref+'">'+field.name+'</option>');
+                        $("#setcogs").append('<option value="'+field.ref+'">'+field.name+'</option>');
+                        $("#setaccp").append('<option value="'+field.ref+'">'+field.name+'</option>');
+                        $("#setcash").append('<option value="'+field.ref+'">'+field.name+'</option>');
+                    });
+                     $("#setsales").val(hasil[1][0].ref);
+                     $("#setaccr").val(hasil[1][1].ref);
+                     $("#setinventory").val(hasil[1][2].ref);
+                     $("#setcogs").val(hasil[1][3].ref);
+                     $("#setaccp").val(hasil[1][4].ref);
+                     $("#setcash").val(hasil[1][5].ref);
                 }
             });
         }
